@@ -1,0 +1,28 @@
+{
+    "databases" : {
+        "system" : {
+            "driver" : "mysql",
+            "user" : "root",
+            "password" : "root",
+            "host" : "127.0.0.1",
+            "port" : "3306",
+            "database" : "nurun_test",
+            "default" : true
+        }
+    },
+    "loader_class" : {
+        "config" : [
+            "Base",
+            "Database"
+        ],
+        "db" : [
+            "Sql",
+            "Connections",
+            "Fetch"
+        ]
+    },
+    "settings" : {
+        "models" : true,
+        "path_models" : "models"
+    }
+}
