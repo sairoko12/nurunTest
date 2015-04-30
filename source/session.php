@@ -23,7 +23,7 @@ $db->run('../database');
 $user = $_POST["data"];
 
 $q = Connections::get()
-        ->select('id_usuario')
+        ->select(array('id_usuario',"username"))
         ->from("usuarios")
         ->where("id_facebook = ?", $user["id"]);
 
@@ -32,7 +32,7 @@ $id = Fetch::row($q);
 if (is_object($id) && !empty($user["id"])) {
     $_SESSION["user"] = $id->id_usuario;
     
-    echo json_encode(array("success" => true));
+    echo json_encode(array("success" => true, "username" => $id->username));
 } elseif (!empty ($user["id"])) {
     try {
         do {
@@ -42,18 +42,21 @@ if (is_object($id) && !empty($user["id"])) {
                 ->from("usuarios")
                 ->where("visible_id = ?", $str);
         } while(is_object(Fetch::row($q)));
+        
+        $username = explode('@', $user["email"]);
 
         $id_user = Connections::get()->insert("usuarios", array(
             "visible_id" => $str,
             "id_facebook" => $user["id"],
-            "nombre" => $user["middle_name"],
+            "username" => $username[0],
+            "nombre" => (isset($user["middle_name"])) ? $user["middle_name"] : "Desconocido",
             "email" => $user["email"],
             "original_picture" => $_POST["photo"]
         ));
 
         $_SESSION["user"] = $id_user;
 
-        echo json_encode(array("success" => true));
+        echo json_encode(array("success" => true, "username" => $username[0]));
     } catch (Exception $e) {
         echo json_encode(array("success" => false, "msg" => $e->getMessage()));
     }

@@ -60,7 +60,7 @@ $(document).ready(function () {
                         },
                         success: function (r) {
                             if (r.success) {
-                                location.reload();
+                                location.href = "../index.php?user=" + r.username;
                             } else {
                                 alert("No fue posible idetificarte.");
                                 console.log(r.msg);
@@ -82,6 +82,8 @@ $(document).ready(function () {
 
         $(this).ajaxSubmit({
             dataType: "json",
+            clearForm: true,
+            resetForm: true,
             success: function (r) {
                 if (r.success) {
                     var tpl = $("#tpl-add").html();

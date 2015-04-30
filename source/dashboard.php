@@ -4,7 +4,7 @@ require "/../database/loader.php";
 $db = new AdminDB();
 $db->run("database");
 
-$usuario = Fetch::row(Connections::get()->select(array("nombre", "email", "original_picture", "visible_id", "app_picture"))->from("usuarios")->where("id_usuario = ?", $_SESSION["user"]));
+$usuario = Fetch::row(Connections::get()->select(array("nombre", "username", "email", "original_picture", "visible_id", "app_picture"))->from("usuarios")->where("id_usuario = ?", $_SESSION["user"]));
 
 $cifras = Fetch::all(Connections::get()
                         ->select(array("id_cifra", "cifra", "fecha_add"))
@@ -37,13 +37,14 @@ $cifras = Fetch::all(Connections::get()
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="thumbnail">
-                                        <img src="<?php echo $usuario->original_picture; ?>" alt="Facebook Picture" class="img-circle img-responsive">
+                                        <img src="<?php echo $usuario->original_picture; ?>" alt="Facebook Picture" style="height: 100px;" class="img-circle img-responsive">
                                         <div class="caption">
                                             <h3><?php echo $usuario->nombre; ?></h3>
                                             <p>
                                             <ul class="list-inline">
-                                                <li>Email: <?php echo $usuario->email; ?></li>
-                                                <li>Usuario ID: <?php echo $usuario->visible_id; ?></li>
+                                                <li><strong>Username:</strong> <?php echo $usuario->username; ?></li>
+                                                <li><strong>Email:</strong> <?php echo $usuario->email; ?></li>
+                                                <li><strong>Usuario ID:</strong> <?php echo $usuario->visible_id; ?></li>
                                             </ul>
                                             </p>
                                             <p><button type="button" class="btn btn-danger btn-block" onclick="location.href = 'logout.php'">Cerrar Sesión</button></p>
@@ -63,7 +64,7 @@ $cifras = Fetch::all(Connections::get()
                                                     <label for="q">Agregar Cifra:</label>
                                                     <div class="row">
                                                         <div class="col-xs-10">
-                                                            <input type="text" class="form-control" name="number" id="q" required="required" placeholder="Puedes agregar números decimales o enteros" />
+                                                            <input type="text" class="form-control" name="number" id="q" required="required" placeholder="Puedes agregar números decimales o enteros" autocomplete="false" />
                                                         </div>
                                                         <div class="col-xs-2">
                                                             <button type="submit" class="btn btn-success btn-block">Agregar</button>
