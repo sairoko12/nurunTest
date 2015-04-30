@@ -44,6 +44,10 @@ if (is_object($id) && !empty($user["id"])) {
         } while(is_object(Fetch::row($q)));
         
         $username = explode('@', $user["email"]);
+        $info = new SplFileInfo($_POST["photo"]);
+        
+        $image = @file_get_contents($_POST["photo"]);
+        @file_put_contents('../assets/images/profile_pictures/' . $username[0] . '.' . $info->getExtension(), $image);
 
         $id_user = Connections::get()->insert("usuarios", array(
             "visible_id" => $str,

@@ -10,7 +10,7 @@ if (isset($_SESSION["time_error"]) && time() < $_SESSION["time_error"]) {
     echo json_encode(array("success" => false, "msg" => "No haz dejado transcurrir el minuto."));
     return;
 } elseif(isset($_SESSION["time_error"]) && time() > $_SESSION["time_error"]) {
-    $_SESSION["time_error"] = 0;
+    unset($_SESSION["time_error"]);
     $_SESSION["errors"] = 0;
 }
 
