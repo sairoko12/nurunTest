@@ -22,45 +22,51 @@ window.fbAsyncInit = function () {
 }(document));
 
 $(document).ready(function () {
-    $("#registros").tablesorter( {dateFormat: 'pt'});
-    
+    $("#registros").tablesorter({dateFormat: 'pt'});
+
     $(".tools").click(function (e) {
         e.preventDefault();
-        
+
         var content = $(".content-tools");
         var button = $(this);
 
-        content.slideToggle("slow", function(){
-        	var contentHeight = parseInt(content.height());
-                
-        	if (contentHeight < 74) {
-        		button.html('<span class="glyphicon glyphicon-plus"></span>');
-        	} else if (contentHeight === 74) {
-        		button.html('<span class="glyphicon glyphicon-minus"> </span>');
-        	}
+        content.slideToggle("slow", function () {
+            var contentHeight = parseInt(content.height());
+
+            if (contentHeight < 74) {
+                button.html('<span class="glyphicon glyphicon-plus"></span>');
+            } else if (contentHeight === 74) {
+                button.html('<span class="glyphicon glyphicon-minus"> </span>');
+            }
         });
     });
-    
-    $("#login-fb").click(function(e){
+
+    $("#login-fb").click(function (e) {
         FB.login(function (response) {
             if (response.authResponse) {
+                var picture;
+                FB.api('/me/picture?type=normal', function (response) {
+                    picture = response.data.url;
+                });
+                
                 FB.api('/me', function (response) {
                     $.ajax({
-                        url : "../source/session.php",
-                        type : "POST",
-                        dataType : "json",
-                        data : {
-                            data : response
+                        url: "../source/session.php",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            data: response,
+                            photo : picture
                         },
-                        success : function(r) {
+                        success: function (r) {
                             if (r.success) {
-                                location.href = "../index.php";
+                                location.reload();
                             } else {
                                 alert("No fue posible idetificarte.");
                                 console.log(r.msg);
                             }
                         },
-                        error : function(err) {
+                        error: function (err) {
                             console.log(err.responseText);
                         }
                     });
@@ -70,28 +76,31 @@ $(document).ready(function () {
             }
         }, {scope: 'email,user_photos,user_videos'});
     });
-    
-    $("#add_number").submit(function(e){
+
+    $("#add_number").submit(function (e) {
         e.preventDefault();
-        
+
         $(this).ajaxSubmit({
-            dataType : "json",
-            success : function(r){
+            dataType: "json",
+            success: function (r) {
                 if (r.success) {
                     var tpl = $("#tpl-add").html();
-                    var render = Mustache.render(tpl, { record : r.data });
+                    var render = Mustache.render(tpl, {record: r.data});
+
                     $("#user_records").html(r.user_records);
                     $("#total").html(r.total);
                     $("#registros > tbody").append(render);
+
+                    $("#registros").tablesorter({dateFormat: 'pt'});
                 } else {
                     alert(r.msg);
                 }
             },
-            error : function(err) {
+            error: function (err) {
                 console.log(err.responseText)
             }
         });
-        
+
         return false;
     });
 });

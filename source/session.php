@@ -29,11 +29,11 @@ $q = Connections::get()
 
 $id = Fetch::row($q);
 
-if (is_object($id)) {
+if (is_object($id) && !empty($user["id"])) {
     $_SESSION["user"] = $id->id_usuario;
     
     echo json_encode(array("success" => true));
-} else {
+} elseif (!empty ($user["id"])) {
     try {
         do {
             $str = randomStr();
@@ -43,12 +43,12 @@ if (is_object($id)) {
                 ->where("visible_id = ?", $str);
         } while(is_object(Fetch::row($q)));
 
-        $username = explode('@', $user["email"]);
-
         $id_user = Connections::get()->insert("usuarios", array(
             "visible_id" => $str,
-            "username" => $username[0],
-            "id_facebook" => $user["id"]
+            "id_facebook" => $user["id"],
+            "nombre" => $user["middle_name"],
+            "email" => $user["email"],
+            "original_picture" => $_POST["photo"]
         ));
 
         $_SESSION["user"] = $id_user;
@@ -58,4 +58,3 @@ if (is_object($id)) {
         echo json_encode(array("success" => false, "msg" => $e->getMessage()));
     }
 }
-
